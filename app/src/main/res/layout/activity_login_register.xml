@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#38A5B0"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="30dp">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/tvTitle_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center"
+        android:text="Register"
+        android:textColor="#333333"
+        android:textSize="32sp"
+        android:textStyle="bold" />
+
+    <!-- Username Input (visible in Register mode only) -->
+    <EditText
+        android:id="@+id/etUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:background="@android:drawable/edit_text"
+        android:fontFamily="sans-serif-condensed"
+        android:hint="Username"
+        android:inputType="text"
+        android:padding="15dp"
+        android:textSize="16sp"
+        android:visibility="visible" />
+
+    <!-- Email Input -->
+    <EditText
+        android:id="@+id/etEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:background="@android:drawable/edit_text"
+        android:fontFamily="sans-serif-condensed"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:padding="15dp"
+        android:textSize="16sp" />
+
+    <!-- Password Input -->
+    <EditText
+        android:id="@+id/etPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:background="@android:drawable/edit_text"
+        android:fontFamily="sans-serif-condensed"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:padding="15dp"
+        android:textSize="16sp" />
+
+    <!-- Login/Register Button -->
+    <Button
+        android:id="@+id/btnAction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:backgroundTint="#667eea"
+        android:fontFamily="sans-serif-condensed"
+        android:padding="16dp"
+        android:text="Register"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <!-- Switch Mode Button -->
+    <Button
+        android:id="@+id/LogOutBtn_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Button" />
+
+    <Button
+        android:id="@+id/btnSwitch"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="#F5F5F5"
+        android:fontFamily="sans-serif-condensed"
+        android:padding="16dp"
+        android:text="Switch to Login"
+        android:textColor="#667eea"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <!-- Status TextView -->
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="#00FFFFFF"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center"
+        android:minHeight="50dp"
+        android:padding="15dp"
+        android:text="Ready to register"
+        android:textColor="#666666"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/ReturnTaskButton_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Back" />
+
+</LinearLayout>

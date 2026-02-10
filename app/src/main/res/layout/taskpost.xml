@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/myTask_Id"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#5BE9F0"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/TaskTitleText_Id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#38AAB1"
+        android:fontFamily="sans-serif-condensed"
+        android:text="TaskTitle"
+        android:textAlignment="center"
+        android:textColor="#48444E"
+        android:textSize="34sp" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+
+    <TextView
+        android:id="@+id/descriptionText_id"
+        android:layout_width="287dp"
+        android:layout_height="115dp"
+        android:background="#1ED6E0"
+        android:fontFamily="sans-serif-condensed"
+        android:padding="20dp"
+        android:text="The description will go here" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/deletebtn_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#256F75"
+            android:fontFamily="sans-serif-condensed"
+            android:text="Delete"
+            android:textColorLink="#10848E" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/EditTask_id"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:backgroundTint="#256F75"
+            android:fontFamily="sans-serif-condensed"
+            android:text="Edit"
+            android:textColorLink="#10848E" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <CheckBox
+            android:id="@+id/Completed_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="#256E74"
+            android:fontFamily="sans-serif-condensed"
+            android:text="Complete" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "810700048444",
+    "firebase_url": "https://pg29-firebase-app-jds-default-rtdb.firebaseio.com",
+    "project_id": "pg29-firebase-app-jds",
+    "storage_bucket": "pg29-firebase-app-jds.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:810700048444:android:2e5473c251628686c25b39",
+        "android_client_info": {
+          "package_name": "com.example.myfirebaseapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDW3VEh4iv8FBJmR6VTeYsaambS8FV4wlA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:810700048444:android:49b05224da13cc92c25b39",
+        "android_client_info": {
+          "package_name": "com.vfs.taskmanagervfsjds"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDW3VEh4iv8FBJmR6VTeYsaambS8FV4wlA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

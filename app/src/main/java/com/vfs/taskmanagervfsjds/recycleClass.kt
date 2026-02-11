@@ -7,9 +7,6 @@ import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
 import com.vfs.taskmanagervfsjds.Cloud.Companion.db
 
 //viewHolder for the recycler
@@ -59,38 +56,55 @@ class MyTasksAdapter(
             checkStatus(task.title, isChecked)
         }
 
-        createtask(task.title, task.description, checkBox.isChecked)
+        createtask(position.toString(),task.title, task.description, checkBox.isChecked)
 
         // Trigger the interface methods
-        editButton.setOnClickListener { listener.onEdit(task, position) }
-        deleteButton.setOnClickListener { listener.onDelete(position) }
+        editButton.setOnClickListener {
+            deleteTask(task.title)
+            listener.onEdit(task, position) }
+        deleteButton.setOnClickListener {
+            deleteTask(task.title)
+            listener.onDelete(position) }
     }
 
-    fun createtask(title: String, description: String, check: Boolean) {
+    fun createtask(count: String, title: String, description: String, check: Boolean) {
         Cloud.auth.currentUser?.let { user ->
             db.reference
                 .child("users")
                 .child(user.uid)
                 .child("TaskLists")
-                .child(title)
+                .child(count)
                 .setValue(Task(title, description))
         }
 
-        checkStatus(title, check)
+        checkStatus(count, check)
     }
 
 
-    fun checkStatus(title: String, check: Boolean)
+    fun checkStatus(Count: String, check: Boolean)
     {
         Cloud.auth.currentUser?.let { user ->
             db.reference
                 .child("users")
                 .child(user.uid)
                 .child("TaskLists")
-                .child(title)
+                .child(Count)
                 .child("Status")
                 .setValue(check)
         }
 
     }
+
+    fun deleteTask(count: String) {
+        Cloud.auth.currentUser?.let { user ->
+            db.reference
+                .child("users")
+                .child(user.uid)
+                .child("TaskLists")
+                .child(count)
+                .removeValue()
+        }
+
+    }
+
 }

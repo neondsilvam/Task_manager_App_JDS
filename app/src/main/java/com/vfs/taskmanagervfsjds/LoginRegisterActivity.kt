@@ -2,6 +2,7 @@ package com.vfs.taskmanagervfsjds
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -25,7 +26,7 @@ class LoginRegisterActivity : AppCompatActivity() {
     lateinit var LogOutBtn : Button
 
     // Mode tracking
-    var isRegisterMode = true
+    var isRegisterMode = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +40,14 @@ class LoginRegisterActivity : AppCompatActivity() {
 
         // Set up button listeners
         setupListeners()
+
+        if (intent.getStringExtra("Type") == "Login") {
+            isRegisterMode = true
+            switchMode()
+        }else{
+            isRegisterMode = false
+            switchMode()
+        }
 
         ReturnBtn = findViewById(R.id.ReturnTaskButton_id)
         ReturnBtn.setOnClickListener {

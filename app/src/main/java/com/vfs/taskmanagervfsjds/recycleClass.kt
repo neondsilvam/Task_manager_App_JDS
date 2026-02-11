@@ -56,38 +56,41 @@ class MyTasksAdapter(
         // Update text when state changes
         checkBox.setOnCheckedChangeListener { _, isChecked ->
             checkBox.text = if (isChecked) "Done" else "Pending"
+            checkStatus(task.title, isChecked)
         }
+
+        createtask(task.title, task.description, checkBox.isChecked)
 
         // Trigger the interface methods
         editButton.setOnClickListener { listener.onEdit(task, position) }
         deleteButton.setOnClickListener { listener.onDelete(position) }
     }
 
-    fun createtask(user: android.R.string) {
-        for (i in 1..10) {
+    fun createtask(title: String, description: String, check: Boolean) {
+        Cloud.auth.currentUser?.let { user ->
             db.reference
+                .child("users")
+                .child(user.uid)
                 .child("TaskLists")
-                .child("Task")
-                .setValue(Task("Title", "Description"))
+                .child(title)
+                .setValue(Task(title, description))
         }
+
+        checkStatus(title, check)
     }
 
 
-    fun checkStatus()
-        {
+    fun checkStatus(title: String, check: Boolean)
+    {
+        Cloud.auth.currentUser?.let { user ->
             db.reference
+                .child("users")
+                .child(user.uid)
                 .child("TaskLists")
-                .child("Title")
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        TODO("Not yet implemented")
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        TODO("Not yet implemented")
-                    }
-                })
-
-
+                .child(title)
+                .child("Status")
+                .setValue(check)
         }
+
+    }
 }

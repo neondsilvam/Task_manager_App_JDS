@@ -10,9 +10,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.vfs.taskmanagervfsjds.AppData.Companion.taskList
 import com.vfs.taskmanagervfsjds.Cloud.Companion.db
 
-class LoginRegisterActivity : AppCompatActivity() {
+class LoginRegisterActivity : AppCompatActivity() , TaskItemListener
+{
 
     lateinit var tvTitle: TextView
     lateinit var etUsername: EditText
@@ -157,6 +159,7 @@ class LoginRegisterActivity : AppCompatActivity() {
                                     .addOnFailureListener {
                                         tvStatus.text = "Failed to save user data: ${it.message}"
                                     }
+
                             }
                         } else {
                             tvStatus.text = "Registration failed: ${task.exception?.message}"
@@ -195,5 +198,13 @@ class LoginRegisterActivity : AppCompatActivity() {
         etUsername.text.clear()
         etEmail.text.clear()
         etPassword.text.clear()
+    }
+
+    override fun onEdit(task: Task, position: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onDelete(position: Int) {
+        TODO("Not yet implemented")
     }
 }

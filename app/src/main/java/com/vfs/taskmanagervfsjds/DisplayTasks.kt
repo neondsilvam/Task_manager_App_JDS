@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
+import com.vfs.taskmanagervfsjds.AppData.Companion.taskList
 
 fun DisplayTasks.checkStatus() {
     if (Cloud.auth.currentUser == null) {
@@ -61,16 +62,6 @@ class DisplayTasks : AppCompatActivity(), TaskItemListener
 
     private lateinit var adapter: MyTasksAdapter
     //This is the list that holds the elements of the recycler (some are added here just as an example)
-    private val taskList = mutableListOf(
-        Task("Shopping", "Buy milk and eggs"),
-        Task("Work", "Finish the report for tomorrow's meeting"),
-        Task("Personal", "Call mom"),
-        Task("Personal", "Call mom"),
-        Task("Personal", "Call mom"),
-        Task("Personal", "Call mom"),
-        Task("Personal", "Call mom"),
-        Task("Personal", "Call mom")
-    )
 
     //This is in first referene to get the element of the list to edit
     private var editingPosition: Int = -1

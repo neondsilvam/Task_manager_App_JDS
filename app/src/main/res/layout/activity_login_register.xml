@@ -78,7 +78,8 @@
         android:id="@+id/LogOutBtn_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:backgroundTint="#256F75"
+        android:text="LogOut" />
 
     <Button
         android:id="@+id/btnSwitch"
@@ -113,6 +114,7 @@
         android:id="@+id/ReturnTaskButton_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="#256F75"
         android:text="Back" />
 
 </LinearLayout>

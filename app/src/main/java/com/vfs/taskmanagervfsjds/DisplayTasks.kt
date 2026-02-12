@@ -11,15 +11,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.vfs.taskmanagervfsjds.AppData.Companion.taskList
-
-fun DisplayTasks.checkStatus() {
-    if (Cloud.auth.currentUser == null) {
-        statusText_id.text = "Not logged in"
-    }else {
-        statusText_id.text = "Logged in"
-    }
-}
 
 fun DisplayTasks.showLoginRediterModal ()
 {
@@ -51,7 +46,7 @@ fun DisplayTasks.showLoginRediterModal ()
 
 
 // Data class to hold task information
-data class Task(var title: String, var description: String)
+data class Task(var title: String = "", var description: String = "")
 
 class DisplayTasks : AppCompatActivity(), TaskItemListener
 {
@@ -105,7 +100,18 @@ class DisplayTasks : AppCompatActivity(), TaskItemListener
         Cloud.auth = FirebaseAuth.getInstance()
 
         statusText_id = findViewById(R.id.statusText_id)
-        checkStatus()
+        
+        // AuthStateListener to detect login status changes from Cloud
+        Cloud.auth.addAuthStateListener { auth ->
+            val user = auth.currentUser
+            if (user != null) {
+                statusText_id.text = "Logged in: ${user.email}"
+                fetchTasksFromFirebase(user.uid)
+            } else {
+                statusText_id.text = "Not logged in"
+            }
+        }
+
         buttonStatus = findViewById(R.id.DisplayLoginButton_id)
         buttonStatus.setOnClickListener { showLoginRediterModal() }
 
@@ -129,6 +135,36 @@ class DisplayTasks : AppCompatActivity(), TaskItemListener
         // adapts the content to the recycler and binds it
         adapter = MyTasksAdapter(taskList, this)
         recyclerView.adapter = adapter
+    }
+
+    private fun fetchTasksFromFirebase(uid: String) {
+        val databaseRef = Cloud.db.reference.child("users").child(uid).child("TaskLists")
+        databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var changesMade = false
+                for (taskSnapshot in snapshot.children) {
+                    // Try to get as Task object or individual fields
+                    val title = taskSnapshot.child("title").getValue(String::class.java) ?: ""
+                    val description = taskSnapshot.child("description").getValue(String::class.java) ?: ""
+
+                    if (title.isNotEmpty()) {
+                        // Only add if it's not already in the local recyclerview list
+                        val existsLocally = taskList.any { it.title.equals(title, ignoreCase = true) }
+                        if (!existsLocally) {
+                            taskList.add(Task(title, description))
+                            changesMade = true
+                        }
+                    }
+                }
+                if (changesMade) {
+                    adapter.notifyDataSetChanged()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@DisplayTasks, "Cloud sync failed: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     // Interface implementations to handle the button to edit

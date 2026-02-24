@@ -41,70 +41,70 @@ class MyTasksAdapter(
         val descriptionTextView = holder.rootView.findViewById<TextView>(R.id.descriptionText_id)
         val editButton = holder.rootView.findViewById<Button>(R.id.EditTask_id)
         val deleteButton = holder.rootView.findViewById<Button>(R.id.deletebtn_id)
-        val checkBox = holder.rootView.findViewById<CheckBox>(R.id.Completed_id)
+        val subTaskContainer = holder.rootView.findViewById<LinearLayout>(R.id.subTaskContainer_id)
 
         // Set initial data
-        titleTextView.text = task.title
+        titleTextView.text = task.groupTitle
         descriptionTextView.text = task.description
         
-        // Initial text based on default state (unchecked)
-        checkBox.text = if (checkBox.isChecked) "Done" else "Pending"
+        // Clear container for recycled view
+        subTaskContainer.removeAllViews()
 
-        // Update text when state changes
-        checkBox.setOnCheckedChangeListener { _, isChecked ->
-            checkBox.text = if (isChecked) "Done" else "Pending"
-            checkStatus(task.title, isChecked)
+        // Dynamically add subtasks
+        task.subTasks.forEachIndexed { index, subTask ->
+            val checkBox = CheckBox(holder.rootView.context).apply {
+                text = subTask.title
+                isChecked = subTask.isCompleted
+                setOnCheckedChangeListener { _, isChecked ->
+                    subTask.isCompleted = isChecked
+                    updateSubTaskInCloud(task.groupTitle, index, isChecked)
+                }
+            }
+            subTaskContainer.addView(checkBox)
         }
 
-        createtask(position.toString(),task.title, task.description, checkBox.isChecked)
+        syncGroupToCloud(task)
 
         // Trigger the interface methods
         editButton.setOnClickListener {
-            deleteTask(task.title)
-            listener.onEdit(task, position) }
+            listener.onEdit(task, position) 
+        }
         deleteButton.setOnClickListener {
-            deleteTask(task.title)
-            listener.onDelete(position) }
-    }
-
-    fun createtask(count: String, title: String, description: String, check: Boolean) {
-        Cloud.auth.currentUser?.let { user ->
-            db.reference
-                .child("users")
-                .child(user.uid)
-                .child("TaskLists")
-                .child(count)
-                .setValue(Task(title, description))
+            deleteGroupFromCloud(task.groupTitle)
+            listener.onDelete(position) 
         }
-
-        checkStatus(count, check)
     }
 
-
-    fun checkStatus(Count: String, check: Boolean)
-    {
+    private fun syncGroupToCloud(task: Task) {
         Cloud.auth.currentUser?.let { user ->
             db.reference
-                .child("users")
+                .child("Groups") // Moved from users table to Groups table
                 .child(user.uid)
-                .child("TaskLists")
-                .child(Count)
-                .child("Status")
-                .setValue(check)
+                .child(task.groupTitle)
+                .setValue(task)
         }
-
     }
 
-    fun deleteTask(count: String) {
+    private fun updateSubTaskInCloud(groupTitle: String, subTaskIndex: Int, status: Boolean) {
         Cloud.auth.currentUser?.let { user ->
             db.reference
-                .child("users")
+                .child("Groups") // Moved from users table to Groups table
                 .child(user.uid)
-                .child("TaskLists")
-                .child(count)
+                .child(groupTitle)
+                .child("subTasks")
+                .child(subTaskIndex.toString())
+                .child("completed")
+                .setValue(status)
+        }
+    }
+
+    private fun deleteGroupFromCloud(groupTitle: String) {
+        Cloud.auth.currentUser?.let { user ->
+            db.reference
+                .child("Groups") // Moved from users table to Groups table
+                .child(user.uid)
+                .child(groupTitle)
                 .removeValue()
         }
-
     }
-
 }

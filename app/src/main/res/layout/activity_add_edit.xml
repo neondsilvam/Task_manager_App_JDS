@@ -8,96 +8,125 @@
     android:background="#ADF2FB"
     tools:context=".AddEditActivity">
 
-    <LinearLayout
-        android:id="@+id/AddEditRail_id"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        android:background="#86DAE2"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/TitleFunction_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-condensed"
-            android:text="Add/Edit"
-            android:textAlignment="center"
-            android:textSize="48sp" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/TitleLayout_Id"
+            android:id="@+id/AddEditRail_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#48C7CE"
-            android:orientation="horizontal">
+            android:layout_margin="20dp"
+            android:background="#86DAE2"
+            android:orientation="vertical"
+            android:padding="15dp">
 
             <TextView
-                android:id="@+id/noTitle_id"
-                android:layout_width="wrap_content"
+                android:id="@+id/TitleFunction_id"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:fontFamily="sans-serif-condensed"
-                android:text="Title fo the Task:"
+                android:text="Add/Edit"
                 android:textAlignment="center"
-                android:textColor="#48444E"
-                android:textSize="20sp" />
+                android:textSize="48sp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+
+            <LinearLayout
+                android:id="@+id/TitleLayout_Id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#48C7CE"
+                android:orientation="horizontal"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/noTitle_id"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="Group Name:"
+                    android:textColor="#48444E"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/editTaskTitle_id"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:hint="Title"
+                    android:inputType="text" />
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp" />
 
             <EditText
-                android:id="@+id/editTaskTitle_id"
-                android:layout_width="wrap_content"
-                android:layout_height="59dp"
-                android:layout_weight="1"
-                android:ems="10"
+                android:id="@+id/EditTextDescription_id"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="#47C5CC"
+                android:gravity="top"
+                android:hint="Description"
+                android:inputType="textMultiLine"
+                android:padding="10dp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Subtasks"
+                android:textSize="24sp"
+                android:fontFamily="sans-serif-condensed" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/editSubTask_id"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="New subtask name" />
+
+                <Button
+                    android:id="@+id/btnAddSubTask_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#38A4AF"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="Add" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/subTaskListContainer_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+
+            <Button
+                android:id="@+id/saveTask_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#38A5B0"
                 android:fontFamily="sans-serif-condensed"
-                android:hint="Title"
-                android:inputType="text" />
+                android:text="Save Group"
+                android:textSize="24sp" />
+
         </LinearLayout>
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
-
-        <EditText
-            android:id="@+id/EditTextDescription_id"
-            android:layout_width="match_parent"
-            android:layout_height="407dp"
-            android:autoText="true"
-            android:background="#47C5CC"
-            android:backgroundTint="#47C5CC"
-            android:ems="10"
-            android:forceHasOverlappingRendering="false"
-            android:gravity="top"
-            android:hint="Description"
-            android:inputType="textMultiLine"
-            android:maxLines="10"
-            android:scrollbars="vertical" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
-
-        <Button
-            android:id="@+id/saveTask_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:backgroundTint="#38A5B0"
-            android:padding="10dp"
-            android:text="Save"
-            android:textColorLink="#10848E"
-            android:textSize="28sp" />
-
-    </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

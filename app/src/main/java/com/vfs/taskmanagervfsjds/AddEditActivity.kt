@@ -4,11 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
 
 class AddEditActivity : AppCompatActivity() {
 
@@ -16,51 +16,102 @@ class AddEditActivity : AppCompatActivity() {
     lateinit var taskTitleInput: EditText
     lateinit var taskDescriptionInput: EditText
     lateinit var headerTitle: TextView
+    
+    lateinit var subTaskInput: EditText
+    lateinit var btnAddSubTask: Button
+    lateinit var subTaskContainer: LinearLayout
+
+    private var currentSubTasks = mutableListOf<SubTask>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_add_edit)
 
-        //Variables from the main "AddEditActivity" layout
-        saveButton = findViewById<Button>(R.id.saveTask_id)
-        taskTitleInput = findViewById<EditText>(R.id.editTaskTitle_id)
-        taskDescriptionInput = findViewById<EditText>(R.id.EditTextDescription_id)
-        headerTitle = findViewById<TextView>(R.id.TitleFunction_id)
+        saveButton = findViewById(R.id.saveTask_id)
+        taskTitleInput = findViewById(R.id.editTaskTitle_id)
+        taskDescriptionInput = findViewById(R.id.EditTextDescription_id)
+        headerTitle = findViewById(R.id.TitleFunction_id)
+        
+        subTaskInput = findViewById(R.id.editSubTask_id)
+        btnAddSubTask = findViewById(R.id.btnAddSubTask_id)
+        subTaskContainer = findViewById(R.id.subTaskListContainer_id)
 
-        // Check if we are adding or editing
         val isAdding = intent.getBooleanExtra("Add", true)
 
-        //This is a boolean system that check if the user will edit or add a task
         if (!isAdding) {
-            headerTitle.text = "Edit Task"
-            // Pre-fill fields if editing
-            taskTitleInput.setText(intent.getStringExtra("Title"))
-            taskDescriptionInput.setText(intent.getStringExtra("Description"))
+            headerTitle.text = "Edit Group"
+            val task = intent.getSerializableExtra("Task") as? Task
+            task?.let {
+                taskTitleInput.setText(it.groupTitle)
+                taskDescriptionInput.setText(it.description)
+                currentSubTasks = it.subTasks.toMutableList()
+                refreshSubTaskList()
+            }
         } else {
-            headerTitle.text = "Add Task"
+            headerTitle.text = "Add Group"
         }
 
-        //For the return file inside the display process of the recycler view
+        btnAddSubTask.setOnClickListener {
+            val subTaskTitle = subTaskInput.text.toString().trim()
+            if (subTaskTitle.isNotEmpty()) {
+                currentSubTasks.add(SubTask(subTaskTitle, false))
+                subTaskInput.text.clear()
+                refreshSubTaskList()
+            } else {
+                Toast.makeText(this, "Subtask name cannot be empty", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         saveButton.setOnClickListener {
             val title = taskTitleInput.text.toString().trim()
             val description = taskDescriptionInput.text.toString()
 
-            // Block action if Title is empty
             if (title.isEmpty()) {
-                taskTitleInput.error = "Title cannot be empty"
-                Toast.makeText(this, "Please enter a task title", Toast.LENGTH_SHORT).show()
+                taskTitleInput.error = "Group name cannot be empty"
                 return@setOnClickListener
             }
 
-            //Updates the values using the Intent() system
             val resultIntent = Intent()
-            resultIntent.putExtra("Title", title)
-            resultIntent.putExtra("Description", description)
+            val resultTask = Task(title, description, currentSubTasks)
+            resultIntent.putExtra("Task", resultTask)
             
-            // Return result to DisplayTasks
             setResult(RESULT_OK, resultIntent)
             finish()
+        }
+    }
+
+    private fun refreshSubTaskList() {
+        subTaskContainer.removeAllViews()
+        currentSubTasks.forEachIndexed { index, subTask ->
+            val subTaskView = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+            }
+
+            val tv = TextView(this).apply {
+                text = subTask.title
+                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+            }
+
+            val btnDelete = Button(this).apply {
+                text = "X"
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                setOnClickListener {
+                    currentSubTasks.removeAt(index)
+                    refreshSubTaskList()
+                }
+            }
+
+            subTaskView.addView(tv)
+            subTaskView.addView(btnDelete)
+            subTaskContainer.addView(subTaskView)
         }
     }
 }

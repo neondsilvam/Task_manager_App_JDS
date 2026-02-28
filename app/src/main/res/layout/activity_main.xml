@@ -63,13 +63,14 @@
         android:id="@+id/Title_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
         android:fontFamily="sans-serif-condensed"
         android:lineSpacingExtra="8sp"
         android:text="Task List"
         android:textAlignment="center"
         android:textSize="48sp"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="0dp" />
+        tools:layout_editor_absoluteX="-14dp" />
 
     <TextView
         android:id="@+id/statusText_id"
@@ -85,17 +86,37 @@
         app:layout_constraintTop_toBottomOf="@+id/Title_id"
         app:layout_constraintVertical_bias="0.37" />
 
-    <Button
-        android:id="@+id/DisplayLoginButton_id"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="#256F75"
-        android:fontFamily="sans-serif-condensed"
-        android:text="Account"
-        android:textColorLink="#38A5B0"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/saveTask_id"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mainLayout_id" />
+        app:layout_constraintTop_toBottomOf="@+id/mainLayout_id">
+
+        <Button
+            android:id="@+id/DisplayLoginButton_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#256F75"
+            android:fontFamily="sans-serif-condensed"
+            android:text="Account"
+            android:textColorLink="#38A5B0" />
+
+        <Space
+            android:layout_width="10dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/viewInvites_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#256F75"
+            android:fontFamily="sans-serif-condensed"
+            android:text="Invites"
+            android:textColorLink="#38A5B0" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

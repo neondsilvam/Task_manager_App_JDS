@@ -89,4 +89,14 @@
         android:fontFamily="sans-serif-condensed"
         android:text="Share with other user" />
 
+    <Button
+        android:id="@+id/ResetAndDisconnect_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#FF5252"
+        android:fontFamily="sans-serif-condensed"
+        android:text="Reset List &amp; Disconnect Users"
+        android:textColor="#FFFFFF"
+        android:visibility="gone" />
+
 </LinearLayout>

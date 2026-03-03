@@ -3,6 +3,8 @@ package com.vfs.taskmanagervfsjds
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -46,6 +48,37 @@ fun DisplayTasks.showLoginRediterModal ()
     val dialog = builder.create()
     dialog.show()
 
+}
+
+class InviteAdapter(
+    private val invites: List<DataSnapshot>,
+    private val onAccept: (DataSnapshot) -> Unit,
+    private val onReject: (DataSnapshot) -> Unit
+) : RecyclerView.Adapter<InviteAdapter.InviteViewHolder>() {
+
+    class InviteViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val tvInfo: TextView = view.findViewById(R.id.inviteText_id)
+        val btnAccept: Button = view.findViewById(R.id.btnAccept_id)
+        val btnReject: Button = view.findViewById(R.id.btnReject_id)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InviteViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.invite_item, parent, false)
+        return InviteViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: InviteViewHolder, position: Int) {
+        val inviteSnapshot = invites[position]
+        val senderEmail = inviteSnapshot.child("senderEmail").getValue(String::class.java) ?: "Unknown"
+        val groupTitle = inviteSnapshot.child("groupTitle").getValue(String::class.java) ?: "Task Group"
+        
+        holder.tvInfo.text = "Invite from $senderEmail for group: $groupTitle"
+        
+        holder.btnAccept.setOnClickListener { onAccept(inviteSnapshot) }
+        holder.btnReject.setOnClickListener { onReject(inviteSnapshot) }
+    }
+
+    override fun getItemCount(): Int = invites.size
 }
 
 class DisplayTasks : AppCompatActivity(), TaskItemListener
@@ -138,40 +171,40 @@ class DisplayTasks : AppCompatActivity(), TaskItemListener
                     return
                 }
 
+                val inviteList = snapshot.children.toList()
+                val recyclerView = RecyclerView(this@DisplayTasks)
+                recyclerView.layoutManager = LinearLayoutManager(this@DisplayTasks)
+                
                 val builder = AlertDialog.Builder(this@DisplayTasks)
                 builder.setTitle("Your Invites")
+                builder.setView(recyclerView)
+                builder.setNegativeButton("Close", null)
 
-                val container = LinearLayout(this@DisplayTasks)
-                container.orientation = LinearLayout.VERTICAL
-                container.setPadding(20, 20, 20, 20)
+                val dialog = builder.create()
 
-                val dialog = builder.setView(container)
-                    .setNegativeButton("Close", null)
-                    .create()
-
-                for (inviteSnapshot in snapshot.children) {
-                    val senderEmail = inviteSnapshot.child("senderEmail").getValue(String::class.java) ?: "Unknown"
-                    val groupTitle = inviteSnapshot.child("groupTitle").getValue(String::class.java) ?: "Task Group"
-                    
-                    val inviteView = LayoutInflater.from(this@DisplayTasks).inflate(R.layout.invite_item, container, false)
-                    val tvInfo = inviteView.findViewById<TextView>(R.id.inviteText_id)
-                    val btnAccept = inviteView.findViewById<Button>(R.id.btnAccept_id)
-                    val btnReject = inviteView.findViewById<Button>(R.id.btnReject_id)
-
-                    tvInfo.text = "Invite from $senderEmail for group: $groupTitle"
-
-                    btnAccept.setOnClickListener {
+                val inviteAdapter = InviteAdapter(inviteList, 
+                    onAccept = { inviteSnapshot ->
                         acceptInvite(inviteSnapshot)
                         dialog.dismiss()
-                    }
-
-                    btnReject.setOnClickListener {
+                    },
+                    onReject = { inviteSnapshot ->
                         inviteSnapshot.ref.removeValue()
                         Toast.makeText(this@DisplayTasks, "Invite rejected", Toast.LENGTH_SHORT).show()
                         dialog.dismiss()
                     }
+                )
+                recyclerView.adapter = inviteAdapter
 
-                    container.addView(inviteView)
+                // Fixed height if more than 4 invites
+                if (inviteList.size > 4) {
+                    recyclerView.post {
+                        val params = recyclerView.layoutParams
+                        // Approximate height of 4 items. A more robust way would be measuring children.
+                        // Assuming each item is roughly 120dp.
+                        val density = resources.displayMetrics.density
+                        params.height = (400 * density).toInt() 
+                        recyclerView.layoutParams = params
+                    }
                 }
 
                 dialog.show()

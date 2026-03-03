@@ -132,7 +132,7 @@ class MyTasksAdapter(
                 if (email == Cloud.auth.currentUser?.email) {
                     Toast.makeText(context, "You cannot invite yourself", Toast.LENGTH_SHORT).show()
                 } else {
-                    searchAndSendInvite(context, email, task)
+                    checkIfAlreadyInvitedOrConnected(context, email, task)
                 }
             }
         }
@@ -140,25 +140,49 @@ class MyTasksAdapter(
         builder.show()
     }
 
-    private fun searchAndSendInvite(context: android.content.Context, email: String, task: Task) {
+    private fun checkIfAlreadyInvitedOrConnected(context: android.content.Context, email: String, task: Task) {
         db.reference.child("users").orderByChild("email").equalTo(email)
             .addListenerForSingleValueEvent(object : com.google.firebase.database.ValueEventListener {
                 override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
                     if (snapshot.exists()) {
                         for (userSnapshot in snapshot.children) {
-                            val receiverUid = userSnapshot.key
-                            if (receiverUid != null) {
-                                sendInvite(context, receiverUid, task)
+                            val receiverUid = userSnapshot.key ?: continue
+                            
+                            // Check if already in allowedUsers
+                            if (task.allowedUsers.contains(receiverUid)) {
+                                Toast.makeText(context, "User is already in this group", Toast.LENGTH_SHORT).show()
                                 return
                             }
+
+                            // Check for pending invites
+                            db.reference.child("invites").child(receiverUid)
+                                .addListenerForSingleValueEvent(object : com.google.firebase.database.ValueEventListener {
+                                    override fun onDataChange(inviteSnapshot: com.google.firebase.database.DataSnapshot) {
+                                        var alreadyInvited = false
+                                        for (invite in inviteSnapshot.children) {
+                                            val invitedGroup = invite.child("groupTitle").getValue(String::class.java)
+                                            val senderUid = invite.child("senderUid").getValue(String::class.java)
+                                            if (invitedGroup == task.groupTitle && senderUid == Cloud.auth.currentUser?.uid) {
+                                                alreadyInvited = true
+                                                break
+                                            }
+                                        }
+
+                                        if (alreadyInvited) {
+                                            Toast.makeText(context, "Invite already sent to this user", Toast.LENGTH_SHORT).show()
+                                        } else {
+                                            sendInvite(context, receiverUid, task)
+                                        }
+                                    }
+                                    override fun onCancelled(error: com.google.firebase.database.DatabaseError) {}
+                                })
+                            return
                         }
                     } else {
                         Toast.makeText(context, "User not found", Toast.LENGTH_SHORT).show()
                     }
                 }
-                override fun onCancelled(error: com.google.firebase.database.DatabaseError) {
-                    Toast.makeText(context, "Search failed", Toast.LENGTH_SHORT).show()
-                }
+                override fun onCancelled(error: com.google.firebase.database.DatabaseError) {}
             })
     }
 
@@ -209,12 +233,12 @@ class MyTasksAdapter(
         
         // Update host
         db.reference.child("Groups").child(hostUid).child(task.groupTitle)
-            .child("subTasks").child(subTaskIndex.toString()).child("completed").setValue(status)
+            .child("subTasks").child(subTaskIndex.toString()).child("isCompleted").setValue(status)
 
         // Update all allowed users
         task.allowedUsers.forEach { uid ->
             db.reference.child("Groups").child(uid).child(task.groupTitle)
-                .child("subTasks").child(subTaskIndex.toString()).child("completed").setValue(status)
+                .child("subTasks").child(subTaskIndex.toString()).child("isCompleted").setValue(status)
         }
     }
 

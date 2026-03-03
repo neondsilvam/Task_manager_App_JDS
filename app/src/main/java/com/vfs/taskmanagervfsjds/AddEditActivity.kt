@@ -1,7 +1,10 @@
 package com.vfs.taskmanagervfsjds
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.view.Gravity
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -89,20 +92,33 @@ class AddEditActivity : AppCompatActivity() {
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
-                )
+                ).apply {
+                    setMargins(0, 4, 0, 4)
+                }
+                setPadding(12, 8, 12, 8)
+                setBackgroundColor(Color.parseColor("#A7F1F5"))
+                gravity = Gravity.CENTER_VERTICAL
             }
 
             val tv = TextView(this).apply {
                 text = subTask.title
+                setTextColor(Color.parseColor("#48444E"))
+                typeface = Typeface.create("sans-serif-condensed", Typeface.NORMAL)
+                textSize = 18f
                 layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
             }
 
             val btnDelete = Button(this).apply {
                 text = "X"
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
+                setBackgroundColor(Color.parseColor("#256F75"))
+                setTextColor(Color.WHITE)
+                typeface = Typeface.create("sans-serif-condensed", Typeface.BOLD)
+                
+                // Fixed size for the delete button
+                val size = (36 * resources.displayMetrics.density).toInt()
+                layoutParams = LinearLayout.LayoutParams(size, size)
+                setPadding(0, 0, 0, 0)
+                
                 setOnClickListener {
                     currentSubTasks.removeAt(index)
                     refreshSubTaskList()

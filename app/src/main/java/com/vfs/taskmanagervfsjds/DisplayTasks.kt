@@ -2,7 +2,9 @@ package com.vfs.taskmanagervfsjds
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -136,23 +138,43 @@ class DisplayTasks : AppCompatActivity(), TaskItemListener
                     return
                 }
 
-                val inviteList = mutableListOf<DataSnapshot>()
-                val inviteStrings = mutableListOf<String>()
+                val builder = AlertDialog.Builder(this@DisplayTasks)
+                builder.setTitle("Your Invites")
+
+                val container = LinearLayout(this@DisplayTasks)
+                container.orientation = LinearLayout.VERTICAL
+                container.setPadding(20, 20, 20, 20)
+
+                val dialog = builder.setView(container)
+                    .setNegativeButton("Close", null)
+                    .create()
 
                 for (inviteSnapshot in snapshot.children) {
                     val senderEmail = inviteSnapshot.child("senderEmail").getValue(String::class.java) ?: "Unknown"
                     val groupTitle = inviteSnapshot.child("groupTitle").getValue(String::class.java) ?: "Task Group"
-                    inviteStrings.add("Invite from $senderEmail for group: $groupTitle")
-                    inviteList.add(inviteSnapshot)
+                    
+                    val inviteView = LayoutInflater.from(this@DisplayTasks).inflate(R.layout.invite_item, container, false)
+                    val tvInfo = inviteView.findViewById<TextView>(R.id.inviteText_id)
+                    val btnAccept = inviteView.findViewById<Button>(R.id.btnAccept_id)
+                    val btnReject = inviteView.findViewById<Button>(R.id.btnReject_id)
+
+                    tvInfo.text = "Invite from $senderEmail for group: $groupTitle"
+
+                    btnAccept.setOnClickListener {
+                        acceptInvite(inviteSnapshot)
+                        dialog.dismiss()
+                    }
+
+                    btnReject.setOnClickListener {
+                        inviteSnapshot.ref.removeValue()
+                        Toast.makeText(this@DisplayTasks, "Invite rejected", Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
+                    }
+
+                    container.addView(inviteView)
                 }
 
-                AlertDialog.Builder(this@DisplayTasks)
-                    .setTitle("Your Invites")
-                    .setItems(inviteStrings.toTypedArray()) { _, which ->
-                        acceptInvite(inviteList[which])
-                    }
-                    .setNegativeButton("Close", null)
-                    .show()
+                dialog.show()
             }
 
             override fun onCancelled(error: DatabaseError) {}
